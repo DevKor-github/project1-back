@@ -2,7 +2,4 @@ node_modules/
 *.log
 dist/
 .env
-*.env
-yarn.lock
 logs/
-scripts/private
