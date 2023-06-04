@@ -9,7 +9,7 @@ const initialize = async () => {
 };
 
 const loadExpressApp = async () => {
-  await initialize;
+  await initialize();
   const app = express();
 
   app.use(helmet());
