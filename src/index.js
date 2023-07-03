@@ -1,22 +1,39 @@
 import express from 'express';
-import router from './routes/index.js';
 import dotenv from 'dotenv';
 import helmet from 'helmet';
 import http from 'http';
 
-const initialize = async () => {
-  dotenv.config();
+import dataSource from './config/dataSource.js';
+import router from './router/index.js';
+import errorHandler from './middlewares/errorHandler.js';
+
+const connectDB = async () => {
+  try {
+    await dataSource.initialize();
+    console.log('DB connected!');
+  } catch (err) {
+    console.error(err);
+  }
 };
 
 const loadExpressApp = async () => {
-  await initialize();
+  await connectDB();
   const app = express();
 
   app.use(helmet());
   app.use(express.json());
   app.enable('trust proxy');
 
-  app.use('/', router);
+  app.use(router);
+  app.use(errorHandler);
+  app.all('*', (_, res) => {
+    res.status(404).json({
+      data: null,
+      error: {
+        message: 'URL Not Found',
+      },
+    });
+  });
   return app;
 };
 
@@ -30,4 +47,10 @@ const createServer = async () => {
   });
 };
 
-createServer();
+createServer()
+  .then(() => {
+    console.log('Server started!');
+  })
+  .catch((err) => {
+    console.error(err);
+  });
