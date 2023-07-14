@@ -53,11 +53,17 @@ export const userSchema = new EntitySchema({
       joinColumn: { name: 'first_major_id' },
     },
     //작성한 post가 user와 연결됨.
-    // posts: {
-    //   type: 'one-to-many',
-    //   target: 'post',
-    //   inverseSide: 'user',
-    // },
+    posts: {
+      type: 'one-to-many',
+      target: 'post',
+      inverseSide: 'user',
+    },
+    //작성한 comment 역시 user와 연결
+    comments: {
+      type: 'one-to-many',
+      target: 'comment',
+      inverseSide: 'user',
+    },
     //보낸 message가 user와 연결
     send_message: {
       type: 'one-to-many',
