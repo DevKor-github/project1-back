@@ -1,42 +1,51 @@
-import { EntitySchema } from 'typeorm';
+import { EntitySchema, ManyToOne, OneToOne } from "typeorm";
+import passerSchema from "./Passer.js";
+import userSchema from "./User.js";
+import hopeSchema from "./Hope.js";
 
-// major
-const majorSchema = new EntitySchema({
-  name: 'major',
-  tableName: 'major',
-  columns: {
-    id: {
-      type: 'int',
-      primary: true,
-      generated: true,
+const majorSchema = new EntitySchema ({
+    name: 'major',
+    tableName: 'major',
+    columns: {
+        id: {
+            type: 'int',
+            primary: true,
+            generated: true,
+        },
+        name: {
+            type: 'varchar',
+            length: 255,
+        },
+        recuriting: {
+            type: 'int',
+        },
     },
-    name: {
-      type: 'varchar',
+    relations: {
+        passer: {      
+            type: OneToOne,
+            target: () => passerSchema,
+            joinColumn: {
+                name: 'id',
+                referencedColumnName: 'second_major_id',
+            },
+        },
+        user: {        
+            type: OneToOne,
+            target: () => userSchema,
+            joinColumn: {
+                name: 'id',
+                referencedColumnName: 'student_id',
+            },
+        },
+        hope: {
+            type: ManyToOne,
+            target: () => hopeSchema,
+            joinColumn: {
+                name: 'id',
+                referencedColumnName: 'hope_major_id',
+            },
+        },
     },
-    recruiting: {
-      type: 'int',
-    },
-  },
-  relations: {
-    passer: {
-      // many passer per one second major?
-      type: 'one-to-many',
-      target: 'passer',
-      inverseSide: 'second_major_id',
-    },
-    hope: {
-      // many hope per one major?
-      type: 'one-to-many',
-      target: 'hope',
-      inverseSide: 'hope_major_id',
-    },
-    user: {
-      // many user per one first major?
-      type: 'one-to-many',
-      target: 'user',
-      inverseSide: 'first_major_id',
-    },
-  },
 });
 
 export default majorSchema;
