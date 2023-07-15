@@ -1,34 +1,42 @@
-import { EntitySchema } from 'typeorm';
+import { EntitySchema, OneToMany } from "typeorm";
+import majorSchema from "./Major.js";
+import candidateSchema from "./Candidate.js";
 
-// hope
-const hopeSchema = new EntitySchema({
-  name: 'hope',
-  tableName: 'hope',
-  columns: {
-    id: {
-      type: 'int',
-      primary: true,
-      generated: true,
+const hopeSchema = new EntitySchema ({
+
+    name: 'hope',
+    tableName: 'hope',
+    columns: {
+        id: {
+            type: 'int',
+            primary: true,
+            generated: true,
+        },
+        candidate_id: {
+            type: 'int',
+        },
+        hope_major_id: {
+            type: 'int',
+        },
     },
-  },
-  relations: {
-    candidate_id: {
-      // many hope per one candidate?
-      type: 'many-to-one',
-      target: 'candidate',
-      joinColumn: {
-        name: 'candidate_id',
-      },
+    relations: {       
+        major: {
+            type: OneToMany,
+            target: () => majorSchema,
+            joinColumn: {
+                name: 'hope_major_id',
+                referencedColumnName: 'id',
+            }, 
+        },
+        candidate: {
+            type: OneToMany,
+            target: () => candidateSchema,
+            joinColumn: {
+                name: 'candidate_id',
+                referencedColumnName: 'id',
+            },
+        },
     },
-    hope_major_id: {
-      // many hope per one major?
-      type: 'many-to-one',
-      target: 'major',
-      joinColumn: {
-        name: 'hope_major_id',
-      },
-    },
-  },
 });
 
 export default hopeSchema;
